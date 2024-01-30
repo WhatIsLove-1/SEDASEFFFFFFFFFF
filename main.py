@@ -1,5 +1,5 @@
 import pandas as pd
-
+import plotly_express as px
 import streamlit as  st
 
 st.set_page_config(page_title="Supermarkt",
@@ -72,3 +72,21 @@ with left_column:
             st.subheader(f"US $ {average_sale_by_transaction}")
 
             st.markdown("---")
+
+sales_by_product_line = (
+    df_selection.groupby(by=["Product line"]).sum()[["Total"]].sort_values(by="Total")
+)
+fig_product_sales = px.bar (
+    sales_by_product_line,
+    x="Total",
+    y=sales_by_product_line.index,
+    orientation="h",
+    title = "<b>Продажи по продуктовой линейке</b>",
+    color_discrete_sequence=["#0083B8"] * len(sales_by_product_line),
+    template="plotly_white"
+)
+fig_product_sales.update_layout(
+    plot_bgcolor="rgba(0,0,0,0)",
+    xaxis = (dict(showgrid=False))
+)
+st.plotly_chart(fig_product_sales)
