@@ -5,18 +5,20 @@ import streamlit as st
 st.set_page_config(page_title="Supermarkt",
                    page_icon=":bar_chart:",
                    layout="wide")
+@st.cache_data
+def get_data_from_excel():
+ df = pd.read_excel(
+        io="supermarkt_sales (1).xlsx",
+        engine="openpyxl",
+        sheet_name="Sales",
+        skiprows=3,
+        usecols="B:R",
+        nrows=1000
+    )
 
-df = pd.read_excel(
-    io="supermarkt_sales (1).xlsx",
-    engine="openpyxl",
-    sheet_name="Sales",
-    skiprows=3,
-    usecols="B:R",
-    nrows=1000
-)
-
-
-
+ df["hour"] = pd.to_datetime(df["Time"], format="%H:%M:%S").dt.hour
+ return df
+df = get_data_from_excel()
 
 st.sidebar.header("Фильтр")
 city=st.sidebar.multiselect(
@@ -89,4 +91,22 @@ fig_product_sales.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
     xaxis=(dict(showgrid=False))
 )
-st.plotly_chart(fig_product_sales)
+
+
+sales_by_hour = df_selection.groupby(by=["hour"]).sum(numeric_only=True)[["Total"]]
+fig_hour_sales = px.bar(
+    sales_by_hour,
+    x=sales_by_hour.index,
+    y="Total",
+    title="<b>Продажи в час</b>",
+    color_discrete_sequence=["#0083B8"] * len(sales_by_hour),
+    template="plotly_white",
+)
+fig_hour_sales.update_layout(
+    xaxis=dict(tickmode="linear"),
+    plot_bgcolor="rgba(0,0,0,0)",
+    yaxis=(dict(showgrid=False)),
+)
+left_column, right_column = st.columns(2)
+left_column.plotly_chart(fig_hour_sales, use_container_width=True)
+right_column.plotly_chart(fig_product_sales, use_container_width=True)
