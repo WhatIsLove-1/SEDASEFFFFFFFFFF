@@ -1,15 +1,7 @@
 import pandas as pd
+import streamlit as st
 import plotly.express as px
 
-
-
-df=pd.read_excel(
-    io="taxi.xlsx",
-    engine="openpyxl",
-    sheet_name="Лист1",
-    skiprows=0,
-    usecols="A:D",
-    nrows=16
-)
-print(df)
-0
+st.set_page_config(page_title="Excel Plotter")
+st.title("Excel Plotter 📈")
+st.subheader("Feed with your Excel file")
