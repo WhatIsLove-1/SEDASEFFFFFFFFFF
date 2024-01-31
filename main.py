@@ -1,6 +1,6 @@
 import pandas as pd
 import plotly_express as px
-import streamlit as  st
+import streamlit as st
 
 st.set_page_config(page_title="Supermarkt",
                    page_icon=":bar_chart:",
@@ -14,7 +14,7 @@ df = pd.read_excel(
     usecols="B:R",
     nrows=1000
 )
-df_selection=(df.iloc[199:400])
+
 
 
 
@@ -43,15 +43,15 @@ branch=st.sidebar.multiselect(
     default=df["Branch"].unique()
 )
 
-product_line=st.sidebar.multiselect(
+product_line = st.sidebar.multiselect(
     "Выберете линийку продуктов",
     options=df["Product_line"].unique(),
     default=df["Product_line"].unique()
 )
 
-df_selection = df.query(
+df_selection = (df.iloc[199:399].query(
     "City == @city & Customer_type == @customer_type & Gender == @gender & Branch == @branch & Product_line == @product_line"
-)
+))
 
 st.title(":bar_chart: Supermarkt")
 st.markdown("##")
@@ -74,19 +74,19 @@ with left_column:
             st.markdown("---")
 
 sales_by_product_line = (
-    df_selection.groupby(by=["Product line"]).sum()[["Total"]].sort_values(by="Total")
+    df_selection.groupby(by=["Product_line"]).sum(numeric_only=True)[["Total"]].sort_values(by="Total")
 )
-fig_product_sales = px.bar (
+fig_product_sales = px.bar(
     sales_by_product_line,
     x="Total",
     y=sales_by_product_line.index,
     orientation="h",
-    title = "<b>Продажи по продуктовой линейке</b>",
+    title="<b>Продажи по продуктовой линейке</b>",
     color_discrete_sequence=["#0083B8"] * len(sales_by_product_line),
     template="plotly_white"
 )
 fig_product_sales.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
-    xaxis = (dict(showgrid=False))
+    xaxis=(dict(showgrid=False))
 )
 st.plotly_chart(fig_product_sales)
