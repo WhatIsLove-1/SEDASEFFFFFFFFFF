@@ -11,3 +11,11 @@ if uploaded_file:
     st.markdown('---')
     df = pd.read_excel(uploaded_file, engine='openpyxl')
     st.dataframe(df)
+    groupby_column = st.selectbox(
+        "Что вы хотите анализировать?",
+        ("Ship Mode", "Segment", "Category", "Sub-Category")
+    )
+
+    output_columns = ["Sales", "Profit"]
+    df_grouped = df.groupby(by=[groupby_column], as_index=False)[output_columns].sum()
+    st.dataframe(df_grouped)
