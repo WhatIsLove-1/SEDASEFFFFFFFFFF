@@ -23,7 +23,7 @@ def generate_html_download_link(fig):
     href = f'<a href="data:text/html;charset=utf-8;base64, {b64}" download="plot.html">Скачать график</a>'
     return st.markdown(href, unsafe_allow_html=True)
 
-st.set_page_config(page_title="Excel Plotter")
+st.set_page_config(page_title="Графопостроитель Excel")
 st.title("Создатель графиков 📈")
 st.subheader("Дай мне свой Excel-файл")
 
@@ -46,9 +46,9 @@ if uploaded_file:
         x=groupby_column,
         y='Sales',
         color="Profit",
-        color_continuous_scale=['red', 'yellow', 'green'],
+        color_continuous_scale=['purple', 'orange', 'blue'],
         template ='plotly_white',
-        title=f'<b>Sales & Profit by{groupby_column}</b>'
+        title=f'<b>Продажи & Профит {groupby_column}</b>'
     )
 st.plotly_chart(fig)
 
